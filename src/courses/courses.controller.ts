@@ -1,34 +1,47 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  Get,
+  Param,
+  ParseIntPipe,
+  HttpStatus,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
+import { SlugPipe } from './pipes/slug.pipe';
+//import { UpdateCourseDto } from './dto/update-course.dto';
 
+@ApiTags('courses')
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
+  @ApiBearerAuth()
   @Post()
-  create(@Body() createCourseDto: CreateCourseDto) {
-    return this.coursesService.create(createCourseDto);
+  @HttpCode(201)
+  create(@Body() create: CreateCourseDto) {
+    return this.coursesService.create(create);
   }
 
-  @Get()
-  findAll() {
-    return this.coursesService.findAll();
+  @Get(':title')
+  getDetail(@Param('title', new SlugPipe()) title: string) {
+    console.log('__Title__', title);
+    return this.coursesService.findOne(1);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
-    return this.coursesService.update(+id, updateCourseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.coursesService.remove(+id);
-  }
+  // @Get(':id')
+  // getDetail2(
+  //   @Param(
+  //     'id',
+  //     new ParseIntPipe({
+  //       errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE,
+  //     }),
+  //   )
+  //   id: number,
+  // ) {
+  //   return this.coursesService.findOne(id);
+  // }
 }
