@@ -19,13 +19,17 @@ import { UpdateVideoDto } from './dto/update-video.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../utils/media.handle';
+import { CoursesService } from '../courses/courses.service';
 
 @Controller('videos')
 @UseInterceptors(LoggerInterceptor)
 @ApiTags('videos')
 @UsePipes(new ValidationPipe())
 export class VideosController {
-  constructor(private readonly videosService: VideosService) {}
+  constructor(
+    private readonly videosService: VideosService,
+    private readonly coursesService: CoursesService,
+  ) {}
 
   @Post()
   create(@Body() createVideoDto: CreateVideoDto) {

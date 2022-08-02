@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  Get,
-  Param,
-  ParseIntPipe,
-  HttpStatus,
-} from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, Get, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
