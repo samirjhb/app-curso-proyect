@@ -1,3 +1,4 @@
+import { LoggerInterceptor } from './../utils/logger.interceptor';
 import {
   Controller,
   Get,
@@ -9,13 +10,18 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { storage } from '../utils/media.handle';
 
 @Controller('videos')
+@UseInterceptors(LoggerInterceptor)
 @ApiTags('videos')
 @UsePipes(new ValidationPipe())
 export class VideosController {
@@ -27,9 +33,16 @@ export class VideosController {
     return this.videosService.create(createVideoDto);
   }
 
+  //Upload
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('avatar', { storage }))
+  handleUpload(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+  }
+
   @Get()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   findAll(@Query('id') id: string) {
-    console.log(id);
     return this.videosService.findAll();
   }
 
