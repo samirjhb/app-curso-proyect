@@ -11,8 +11,13 @@ export class User {
   @Prop()
   password: string;
 
+  @Prop({
+    default:['user']
+  })
+  roles: string[];
+
   @Prop()
-  avatar: string;
+  avatar:string;
 
   @Prop()
   description: string;

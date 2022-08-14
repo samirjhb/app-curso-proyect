@@ -4,6 +4,7 @@ import { CoursesService } from './courses.service';
 import { CoursesController } from './courses.controller';
 import { Course, CourseSchema } from './model/courses.scheme';
 import { User, UserSchema } from 'src/users/model/user.schema';
+import { JwtStrategy } from 'src/auth/strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { User, UserSchema } from 'src/users/model/user.schema';
     ]),
   ],
   controllers: [CoursesController],
-  providers: [CoursesService],
+  providers: [CoursesService, JwtStrategy],
   exports: [CoursesService],
 })
 export class CoursesModule {}
