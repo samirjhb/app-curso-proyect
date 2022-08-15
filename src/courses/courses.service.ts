@@ -7,7 +7,8 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course, CourseDocument } from './model/courses.scheme';
 
 interface ModelExt <T> extends Model<T>{
-  delete: Function
+  delete: Function,
+  findAllCourses: Function,
 }
 @Injectable()
 export class CoursesService {
@@ -19,14 +20,12 @@ export class CoursesService {
   ) {}
 
   create(createCourseDto: CreateCourseDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const user = this.userModel.find();
     return this.courseModel.create(createCourseDto);
   }
 
   async findAll() {
-    const ListaCourse = await this.courseModel.find();
-    return ListaCourse;
+     return this.courseModel.findAllCourses();
   }
 
   async findOne(id: number) {
