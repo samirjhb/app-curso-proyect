@@ -11,7 +11,6 @@ export class AuthController {
 
   @Post('register')
   handleRegister(@Body() registerBody: RegisterAuthDto) {
-    console.log(registerBody);
     return this.authService.register(registerBody);
   }
 

@@ -20,6 +20,9 @@ export class User {
   avatar:string;
 
   @Prop()
+  name:string;
+
+  @Prop()
   description: string;
 }
 

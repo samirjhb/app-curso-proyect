@@ -1,4 +1,15 @@
-import { Controller, Post, Body, HttpCode, Get, Param, UseGuards, Req, SetMetadata } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  Get,
+  Param,
+  UseGuards,
+  Req,
+  SetMetadata,
+  Delete,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { Rol } from 'src/decorators/rol.decorator';
@@ -11,8 +22,8 @@ import { SlugPipe } from './pipes/slug.pipe';
 //import { UpdateCourseDto } from './dto/update-course.dto';
 
 @ApiTags('courses')
-// @UseGuards(BrowserAgentGuard) 
-@UseGuards(JwtGuardGuard, RolesGuardGuard) 
+// @UseGuards(BrowserAgentGuard)
+@UseGuards(JwtGuardGuard, RolesGuardGuard)
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
@@ -21,17 +32,30 @@ export class CoursesController {
   @Post()
   @HttpCode(201)
   @Rol(['admin'])
-  create(@Req() req:Request, @Body() create: CreateCourseDto) {
-    console.log(req.user)
+  create(@Req() req: Request, @Body() create: CreateCourseDto) {
     return this.coursesService.create(create);
   }
 
-  @Get(':title')
-  @Rol([ 'manager', 'admin'])
-  getDetail(@Param('title', new SlugPipe()) title: string) {
-    console.log('__Title__', title);
-    return this.coursesService.findOne(1);
+  @Get('')
+  @HttpCode(200)
+  @Rol(['manager', 'admin'])
+  getListCourses() {
+    return this.coursesService.findAll();
   }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @Rol(['manager', 'admin'])
+  deleteCourse(@Param('id') id: string) {
+    return this.coursesService.remove(id);
+  }
+
+  // @Get(':title')
+  // @Rol([ 'manager', 'admin'])
+  // getDetail(@Param('title', new SlugPipe()) title: string) {
+  //   console.log('__Title__', title);
+  //   return this.coursesService.findOne(1);
+  // }
 
   // @Get(':id')
   // getDetail2(

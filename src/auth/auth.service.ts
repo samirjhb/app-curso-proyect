@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -12,13 +13,19 @@ import { compareHash, generateHash } from './utils/handleBcrypt';
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
+    private readonly eventEmitter: EventEmitter2,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
   public async register(userBody: RegisterAuthDto) {
     const { password, ...user } = userBody;
     const userParse = { ...user, password: await generateHash(password) };
-    return this.userModel.create(userParse);
+    const newUser = await this.userModel.create(userParse);
+
+    //Enviar evento Email
+    this.eventEmitter.emit('user.created', newUser);
+
+    return newUser;
   }
 
   public async login(userLoginBody: LoginAuthDto) {
@@ -39,14 +46,16 @@ export class AuthService {
     //Agregando el Token
     const payload = {
       id: userFlat._id,
-      name: userFlat.name
+      name: userFlat.name,
     };
     const token = this.jwtService.sign(payload);
     const data = {
-      token: token, 
+      token: token,
       user: userFlat,
     };
 
+    //sabaer quien inicio sesion 
+    this.eventEmitter.emit('user.login', data );
     return data;
   }
 }
