@@ -25,6 +25,7 @@ import { MailModule } from './mail/mail.module';
     }),
     MongooseModule.forRoot(process.env.DB_URI, {
       connectionFactory: (connection) => {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         connection.plugin(require('mongoose-delete'), {
           overrideMethods: 'all',
         });

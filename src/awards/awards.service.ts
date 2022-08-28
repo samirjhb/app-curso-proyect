@@ -1,26 +1,44 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateAwardDto } from './dto/create-award.dto';
 import { UpdateAwardDto } from './dto/update-award.dto';
+import { Awards, AwardsDocument } from './model/awards.schema';
+
+interface ModelExt<T> extends Model<T> {
+  delete: Function;
+  findAllCourses: Function;
+}
 
 @Injectable()
 export class AwardsService {
-  create(createAwardDto: CreateAwardDto) {
-    return 'This action adds a new award';
+  @InjectModel(Awards.name)
+  private readonly awardsModel: ModelExt<AwardsDocument>;
+
+  async create(createAwardDto: CreateAwardDto) {
+    return await this.awardsModel.create(createAwardDto);
   }
 
-  findAll() {
-    return `This action returns all awards`;
+  async findAll() {
+    return await this.awardsModel.findAllCourses();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} award`;
+  async findOne(id: string) {
+    return this.awardsModel.findOne({ id });
   }
 
-  update(id: number, updateAwardDto: UpdateAwardDto) {
-    return `This action updates a #${id} award`;
+  async update(id: string, updateAwardDto: UpdateAwardDto) {
+    return await this.awardsModel.findOneAndUpdate({ id }, updateAwardDto, {
+      upsert: true,
+      new: true,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} award`;
+  async remove(id: string) {
+    const _id = new Types.ObjectId(id);
+    const response = this.awardsModel.delete({ _id });
+    return await response;
   }
 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-types */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
@@ -6,9 +8,9 @@ import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course, CourseDocument } from './model/courses.scheme';
 
-interface ModelExt <T> extends Model<T>{
-  delete: Function,
-  findAllCourses: Function,
+interface ModelExt<T> extends Model<T> {
+  delete: Function;
+  findAllCourses: Function;
 }
 @Injectable()
 export class CoursesService {
@@ -25,23 +27,23 @@ export class CoursesService {
   }
 
   async findAll() {
-     return this.courseModel.findAllCourses();
+    return this.courseModel.findAllCourses();
   }
 
   async findOne(id: string) {
-    return this.courseModel.findOne ({id})
+    return this.courseModel.findOne({ id });
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto) {
-    return this.courseModel.findOneAndUpdate({id}, updateCourseDto, {
+    return this.courseModel.findOneAndUpdate({ id }, updateCourseDto, {
       upsert: true,
-      new:true
+      new: true,
     });
   }
 
   async remove(id: string) {
-    const _id = new Types.ObjectId(id)
-    const response = this.courseModel.delete({_id})
+    const _id = new Types.ObjectId(id);
+    const response = this.courseModel.delete({ _id });
     return response;
   }
 }

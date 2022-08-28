@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { LoggerInterceptor } from './../utils/logger.interceptor';
 import {
   Controller,
@@ -12,6 +13,7 @@ import {
   ValidationPipe,
   UseInterceptors,
   UploadedFile,
+  HttpCode,
 } from '@nestjs/common';
 import { VideosService } from './videos.service';
 import { CreateVideoDto } from './dto/create-video.dto';
@@ -20,6 +22,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from '../utils/media.handle';
 import { CoursesService } from '../courses/courses.service';
+import { Rol } from 'src/decorators/rol.decorator';
 
 @Controller('videos')
 @UseInterceptors(LoggerInterceptor)
@@ -32,37 +35,47 @@ export class VideosController {
   ) {}
 
   @Post()
+  @HttpCode(201)
+  @Rol(['admin'])
   create(@Body() createVideoDto: CreateVideoDto) {
-    console.log(createVideoDto);
     return this.videosService.create(createVideoDto);
   }
 
   //Upload
   @Post('upload')
+  @HttpCode(201)
+  @Rol(['admin'])
   @UseInterceptors(FileInterceptor('avatar', { storage }))
   handleUpload(@UploadedFile() file: Express.Multer.File) {
     console.log(file);
   }
 
   @Get()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @HttpCode(200)
+  @Rol(['manager', 'admin'])
   findAll(@Query('id') id: string) {
     return this.videosService.findAll();
   }
 
   @Get(':id')
+  @HttpCode(200)
+  @Rol(['manager', 'admin'])
   findOne(@Param('id') id: string) {
     console.log('Que tengo aqui', id);
-    return this.videosService.findOne(+id);
+    return this.videosService.findOne(id);
   }
 
   @Patch(':id')
+  @HttpCode(200)
+  @Rol(['admin'])
   update(@Param('id') id: string, @Body() updateVideoDto: UpdateVideoDto) {
-    return this.videosService.update(+id, updateVideoDto);
+    return this.videosService.update(id, updateVideoDto);
   }
 
   @Delete(':id')
+  @HttpCode(200)
+  @Rol(['manager', 'admin'])
   remove(@Param('id') id: string) {
-    return this.videosService.remove(+id);
+    return this.videosService.remove(id);
   }
 }

@@ -1,26 +1,44 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/ban-types */
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateVideoDto } from './dto/create-video.dto';
 import { UpdateVideoDto } from './dto/update-video.dto';
+import { Video, VideoDocument } from './model/videos.schema';
+
+interface ModelExt<T> extends Model<T> {
+  delete: Function;
+  findAllCourses: Function;
+}
 
 @Injectable()
 export class VideosService {
-  create(createVideoDto: CreateVideoDto) {
-    return 'This action adds a new video';
+  @InjectModel(Video.name)
+  private readonly videosModel: ModelExt<VideoDocument>;
+
+  async create(createVideoDto: CreateVideoDto) {
+    return this.videosModel.create(createVideoDto);
   }
 
-  findAll() {
-    return `This action returns all videos`;
+  async findAll() {
+    return await this.videosModel.findAllCourses();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} video`;
+  async findOne(id: string) {
+    return await this.videosModel.findOne({ id });
   }
 
-  update(id: number, updateVideoDto: UpdateVideoDto) {
-    return `This action updates a #${id} video`;
+  async update(id: string, updateVideoDto: UpdateVideoDto) {
+    return await this.videosModel.findOneAndUpdate({ id }, updateVideoDto, {
+      upsert: true,
+      new: true,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} video`;
+  async remove(id: string) {
+    const _id = new Types.ObjectId(id);
+    const response = this.videosModel.delete({ _id });
+    return await response;
   }
 }
