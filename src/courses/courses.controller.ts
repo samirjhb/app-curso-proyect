@@ -17,6 +17,7 @@ import { Rol } from 'src/decorators/rol.decorator';
 //import { BrowserAgentGuard } from 'src/guards/browser-agent.guard';
 import { JwtGuardGuard } from 'src/guards/jwt-guard.guard';
 import { RolesGuardGuard } from 'src/guards/roles-guard.guard';
+import { PaginationV2 } from 'src/pagination-v2.decorator';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -33,35 +34,36 @@ export class CoursesController {
   @ApiBearerAuth()
   @Post()
   @HttpCode(201)
-  @Rol(['admin'])
+  @Rol(['admin', 'user'])
   create(@Req() req: Request, @Body() create: CreateCourseDto) {
     return this.coursesService.create(create);
   }
 
   @Get('')
   @HttpCode(200)
-  @Rol(['manager', 'admin'])
-  getListCourses() {
-    return this.coursesService.findAll();
+  @Rol(['manager', 'admin', 'user'])
+  getListCourses(@PaginationV2() pagination: any) {
+    console.log('____', pagination);
+    return this.coursesService.findAll(pagination);
   }
 
   @Get(':id')
   @HttpCode(200)
-  @Rol(['manager', 'admin'])
+  @Rol(['manager', 'admin', 'user'])
   getOneCourse(@Param('id') id: string) {
     return this.coursesService.findOne(id);
   }
 
   @Patch(':id')
   @HttpCode(200)
-  @Rol(['admin'])
+  @Rol(['admin', 'user'])
   updateCourse(@Param('id') id: string, @Body() body: UpdateCourseDto) {
     return this.coursesService.update(id, body);
   }
 
   @Delete(':id')
   @HttpCode(200)
-  @Rol(['manager', 'admin'])
+  @Rol(['manager', 'admin', 'user'])
   deleteCourse(@Param('id') id: string) {
     return this.coursesService.remove(id);
   }

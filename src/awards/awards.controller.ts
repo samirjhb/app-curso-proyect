@@ -26,35 +26,35 @@ export class AwardsController {
   @ApiBearerAuth()
   @Post()
   @HttpCode(201)
-  @Rol(['admin'])
+  @Rol(['admin', 'user'])
   create(@Body() createAwardDto: CreateAwardDto) {
     return this.awardsService.create(createAwardDto);
   }
 
-  @Get()
+  @Get('')
   @HttpCode(200)
-  @Rol(['manager', 'admin'])
+  @Rol(['manager', 'admin', 'user'])
   findAll() {
     return this.awardsService.findAll();
   }
 
   @Get(':id')
   @HttpCode(200)
-  @Rol(['manager', 'admin'])
+  @Rol(['manager', 'admin', 'user'])
   findOne(@Param('id') id: string) {
     return this.awardsService.findOne(id);
   }
 
   @Patch(':id')
   @HttpCode(200)
-  @Rol(['admin'])
+  @Rol(['admin', 'user'])
   update(@Param('id') id: string, @Body() updateAwardDto: UpdateAwardDto) {
     return this.awardsService.update(id, updateAwardDto);
   }
 
   @Delete(':id')
   @HttpCode(200)
-  @Rol(['manager', 'admin'])
+  @Rol(['manager', 'admin', 'user'])
   remove(@Param('id') id: string) {
     return this.awardsService.remove(id);
   }

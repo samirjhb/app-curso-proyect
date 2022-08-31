@@ -9,7 +9,7 @@ import { Awards, AwardsDocument } from './model/awards.schema';
 
 interface ModelExt<T> extends Model<T> {
   delete: Function;
-  findAllCourses: Function;
+  findAllAwards: Function;
 }
 
 @Injectable()
@@ -22,7 +22,7 @@ export class AwardsService {
   }
 
   async findAll() {
-    return await this.awardsModel.findAllCourses();
+    return this.awardsModel.findAllAwards();
   }
 
   async findOne(id: string) {

@@ -42,15 +42,15 @@ export class VideosController {
   }
 
   //Upload
-  @Post('upload')
+  @Post('upload/:id')
   @HttpCode(201)
   @Rol(['admin'])
-  @UseInterceptors(FileInterceptor('avatar', { storage }))
-  handleUpload(@UploadedFile() file: Express.Multer.File) {
-    console.log(file);
+  @UseInterceptors(FileInterceptor('file', { storage }))
+  upload(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+    return this.videosService.addVideo(id, file.filename);
   }
 
-  @Get()
+  @Get('')
   @HttpCode(200)
   @Rol(['manager', 'admin'])
   findAll(@Query('id') id: string) {

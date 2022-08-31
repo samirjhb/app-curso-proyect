@@ -10,6 +10,7 @@ import { Course, CourseDocument } from './model/courses.scheme';
 
 interface ModelExt<T> extends Model<T> {
   delete: Function;
+  paginate: Function;
   findAllCourses: Function;
 }
 @Injectable()
@@ -26,8 +27,8 @@ export class CoursesService {
     return this.courseModel.create(createCourseDto);
   }
 
-  async findAll() {
-    return this.courseModel.findAllCourses();
+  async findAll(pagination) {
+    return this.courseModel.paginate({}, pagination);
   }
 
   async findOne(id: string) {

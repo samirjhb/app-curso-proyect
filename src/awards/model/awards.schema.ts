@@ -17,6 +17,39 @@ export class Awards {
 
   @Prop()
   description: string;
+
+  @Prop({ required: true })
+  idAuthor: string;
 }
 
 export const AwardsSchema = SchemaFactory.createForClass(Awards);
+
+AwardsSchema.statics.findAllAwards = function () {
+  const list = this.aggregate([
+    {
+      //Relacion con la base de datos
+      $lookup: {
+        from: 'users',
+        foreignField: 'id',
+        localField: 'idAuthor',
+        as: 'MyAuthor',
+        pipeline: [
+          {
+            //Actuando en la colletions de User
+            $project: {
+              _id: 0,
+              name: 1,
+              email: 1,
+              avatar: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: '$MyAuthor',
+    },
+  ]);
+
+  return list;
+};
