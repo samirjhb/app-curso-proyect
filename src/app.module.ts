@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CoursesModule } from './courses/courses.module';
@@ -31,6 +31,11 @@ import { MailModule } from './mail/mail.module';
         });
         return connection;
       },
+    }),
+    CacheModule.register({
+      ttl: 3600,
+      max: 1000,
+      isGlobal: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),

@@ -10,6 +10,8 @@ import {
   //SetMetadata,
   Delete,
   Patch,
+  UseInterceptors,
+  CacheInterceptor,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -41,9 +43,9 @@ export class CoursesController {
 
   @Get('')
   @HttpCode(200)
+  @UseInterceptors(CacheInterceptor)
   @Rol(['manager', 'admin', 'user'])
   getListCourses(@PaginationV2() pagination: any) {
-    console.log('____', pagination);
     return this.coursesService.findAll(pagination);
   }
 
