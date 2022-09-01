@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+ nest:
+  container_name: nest_app
+  build:
+   context: ./
+  restart: always
+  ports:
+   - 3002:3002
+  environment:
+   - DB_URI_BACK=mongodb+srv://usernest:knyvlEWG6dtKG7K2@cluster0.9ghfk.mongodb.net/curso_nestJS
+   - JWT_SECRET=secreto0102
+   - DB_URI=mongodb://mongo/curso_nestJS
+  depends_on:
+   - mongo
+  links:
+   - mongo
+  
+ mongo:
+   image: mongo
+   container_name: nest_mongo
+   restart: always
+   ports:
+    - "27019:27017"
+   environment:
+    MONGO_INITDB_DATABASE: curso_nestJS
+   expose:
+   - 27019
+
+
